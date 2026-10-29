@@ -2,8 +2,9 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <iomanip> // Libreria para alineacion simetrica de columnas
 
-// 1. FUNCION INLINE: Calcula el precio de un producto aplicando un porcentaje de descuento
+// 1. FUNCION INLINE: Calcula el precio aplicando un porcentaje de descuento
 inline double calcularDescuento(double precio, double porcentaje) {
     return precio * (1.0 - porcentaje / 100.0);
 }
@@ -19,7 +20,7 @@ public:
     Producto(std::string n = "Sin nombre", double p = 0.0, int c = 0)
         : nombre(n), precio(p), cantidad(c) {}
 
-    // 3. FUNCIONES CONSTANTES: Permiten consultar atributos sin modificar el estado del objeto
+    // 3. FUNCIONES CONSTANTES: Permiten consultar atributos sin modificar el objeto
     std::string getNombre() const {
         return nombre;
     }
@@ -33,41 +34,52 @@ public:
     }
 
     void mostrarDatos() const {
-        std::cout << "Producto: " << nombre << " | Precio: $" << precio << " | Cantidad: " << cantidad << "\n";
+        std::cout << std::left << std::setw(18) << nombre
+                  << " | $" << std::right << std::setw(8) << std::fixed << std::setprecision(2) << precio
+                  << " | " << std::right << std::setw(8) << cantidad << "\n";
     }
 
-    // 5. SOBRECARGA DEL OPERADOR +: Combina dos productos sumando sus precios y sus cantidades
+    // 5. SOBRECARGA DEL OPERADOR +: Combina dos productos sumando precios y cantidades
     Producto operator+(const Producto& otro) const {
-        std::string nombreCombinado = nombre + " con " + otro.nombre;
+        std::string nombreCombinado = nombre + " + " + otro.nombre;
         double precioSumado = precio + otro.precio;
         int cantidadTotal = cantidad + otro.cantidad;
         return Producto(nombreCombinado, precioSumado, cantidadTotal);
     }
 
-    // 2. FUNCION FRIEND: Declaración de función amiga para acceder a atributos privados y comparar precios
+    // 2. FUNCION FRIEND: Accede a atributos privados para comparar precios
     friend void compararPrecios(const Producto& p1, const Producto& p2);
 
-    // RETO ADICIONAL: Sobrecarga del operador << para imprimir el producto en formato legible
+    // RETO ADICIONAL: Sobrecarga del operador << para imprimir en formato de tabla alineada
     friend std::ostream& operator<<(std::ostream& os, const Producto& p) {
-        os << "[" << p.nombre << " | Precio: $" << p.precio << " | Stock: " << p.cantidad << " unidades]";
+        os << std::left << std::setw(18) << p.nombre
+           << " | $" << std::right << std::setw(8) << std::fixed << std::setprecision(2) << p.precio
+           << " | " << std::right << std::setw(8) << p.cantidad;
         return os;
     }
 };
 
-// Implementacion de la función amiga
+// Implementacion de la funcion amiga
 void compararPrecios(const Producto& p1, const Producto& p2) {
-    std::cout << "Comparando " << p1.nombre << " con " << p2.nombre << ":\n";
+    std::cout << std::left << std::setw(12) << p1.nombre << " vs " << std::setw(12) << p2.nombre << " -> ";
     if (p1.precio > p2.precio) {
-        std::cout << p1.nombre << " es mas caro que " << p2.nombre << "\n";
+        std::cout << p1.nombre << " es mas caro\n";
     } else if (p2.precio > p1.precio) {
-        std::cout << p2.nombre << " es mas caro que " << p1.nombre << "\n";
+        std::cout << p2.nombre << " es mas caro\n";
     } else {
-        std::cout << "Ambos productos tienen el mismo precio\n";
+        std::cout << "Ambos tienen el mismo precio\n";
     }
 }
 
+// Funcion auxiliar para imprimir el encabezado de las tablas
+void imprimirEncabezadoTabla() {
+    std::cout << std::left << std::setw(18) << "PRODUCTO"
+              << " | " << std::right << std::setw(9) << "PRECIO"
+              << " | " << std::right << std::setw(8) << "CANTIDAD" << "\n";
+    std::cout << std::string(42, '-') << "\n";
+}
+
 int main() {
-    // Creación del vector con inventario de productos
     std::vector<Producto> inventario = {
         Producto("Laptop", 1200.0, 5),
         Producto("Mouse", 25.0, 20),
@@ -76,43 +88,53 @@ int main() {
         Producto("Audifonos", 80.0, 12)
     };
 
-    std::cout << "=== SISTEMA DE PRODUCTOS ===\n\n";
+    std::cout << "==========================================" << "\n";
+    std::cout << "          SISTEMA DE PRODUCTOS            " << "\n";
+    std::cout << "==========================================" << "\n\n";
 
-    // Demostracion del RETO ADICIONAL y FUNCION CONST: Impresión con el operador << sobrecargado
-    std::cout << "--- LISTA DE PRODUCTOS ---\n";
+    // Demostracion del RETO ADICIONAL y FUNCION CONST: Impresion simetrica con operador <<
+    std::cout << "--- LISTA DE PRODUCTOS EN INVENTARIO ---\n";
+    imprimirEncabezadoTabla();
     for (const auto& prod : inventario) {
         std::cout << prod << "\n";
     }
-    std::cout << "\n";
+    std::cout << std::string(42, '-') << "\n\n";
 
     // Demostracion de FUNCION INLINE
     std::cout << "--- CALCULO DE DESCUENTO (Funcion Inline) ---\n";
     double precioOriginal = inventario[0].getPrecio();
-    double descuento = 15.0;
-    double precioFinal = calcularDescuento(precioOriginal, descuento);
-    std::cout << "Precio original de " << inventario[0].getNombre() << ": $" << precioOriginal << "\n";
-    std::cout << "Precio final con " << descuento << "% de descuento: $" << precioFinal << "\n\n";
+    double porcentajeDescuento = 15.0;
+    double precioFinal = calcularDescuento(precioOriginal, porcentajeDescuento);
+    
+    std::cout << std::left << std::setw(22) << "Producto:" << inventario[0].getNombre() << "\n";
+    std::cout << std::left << std::setw(22) << "Precio Original:" << "$" << std::fixed << std::setprecision(2) << precioOriginal << "\n";
+    std::cout << std::left << std::setw(22) << "Descuento:" << porcentajeDescuento << "%\n";
+    std::cout << std::left << std::setw(22) << "Precio Con Descuento:" << "$" << precioFinal << "\n\n";
 
     // Demostracion de FUNCION FRIEND
     std::cout << "--- COMPARACION DE PRECIOS (Funcion Friend) ---\n";
     compararPrecios(inventario[0], inventario[3]);
+    compararPrecios(inventario[1], inventario[4]);
     std::cout << "\n";
 
-    // Demostracion de LAMBDA: Filtrar productos por precio menor a un umbral
+    // Demostracion de LAMBDA: Filtrar productos por precio menor a un limite
     double limitePrecio = 100.0;
-    std::cout << "--- FILTRADO CON LAMBDA (Productos con precio menor a $" << limitePrecio << ") ---\n";
+    std::cout << "--- FILTRADO CON LAMBDA (Productos menores a $" << limitePrecio << ") ---\n";
+    imprimirEncabezadoTabla();
     auto filtrarPorPrecio = [limitePrecio](const Producto& p) {
         if (p.getPrecio() < limitePrecio) {
             std::cout << p << "\n";
         }
     };
     std::for_each(inventario.begin(), inventario.end(), filtrarPorPrecio);
-    std::cout << "\n";
+    std::cout << std::string(42, '-') << "\n\n";
 
     // Demostracion de SOBRECARGA DEL OPERADOR +
     std::cout << "--- COMBINACION DE PRODUCTOS (Operador +) ---\n";
     Producto combo = inventario[1] + inventario[2]; // Combinar Mouse + Teclado
-    std::cout << "Producto resultante de la suma:\n" << combo << "\n";
+    imprimirEncabezadoTabla();
+    std::cout << combo << "\n";
+    std::cout << std::string(42, '-') << "\n";
 
     return 0;
 }
