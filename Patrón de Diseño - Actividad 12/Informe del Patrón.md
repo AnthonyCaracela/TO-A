@@ -176,7 +176,7 @@ g++ -std=c++14 audio_adapter_system.cpp -o AudioAdapterApp
 
 ---
 
-## 🖥️ Salida Esperada en Consola
+## 🖥️ Salida en Consola
 
 ![alt text](image.png)
 ---
