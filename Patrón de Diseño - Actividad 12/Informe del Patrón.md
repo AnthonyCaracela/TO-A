@@ -1,11 +1,16 @@
 # Informe Técnico: Implementación del Patrón de Diseño Adapter en C++
 
-**Asignatura:** Patrones de Diseño de Software  
+**Asignatura:** Tecnología de Objetos  
 **Grupo:** Grupo 4  
 **Patrón Asignado:** Structural Pattern – Adapter (Adaptador)  
-**Proyecto:** `SistemaAdaptadorAudio`  
+**Tema:** Patrones de Diseño de Software   
 **Archivo Principal:** `audio_adapter_system.cpp`  
-
+**Integrantes:**
+* **Caracela Challco**, Anthony Jeffry
+* **Cornejo Hurtado**, Dario Rafael
+* **Fernández Lastarria**, Valerio Piero
+* **Llavilla Machaca**, Frayd Yandel
+* **Mamani Solórzano**, Efraín Alex
 ---
 
 ## 📋 Descripción del Proyecto
@@ -46,28 +51,22 @@ Mediante el **Patrón de Diseño Adapter**, logramos acoplar ambas interfaces si
 ## 💻 Código Fuente (`audio_adapter_system.cpp`)
 
 ```cpp
-/**
- * @file audio_adapter_system.cpp
- * @brief Implementación del patrón de diseño Adapter para un sistema de audio.
- * @group Grupo 4
- */
-
 #include <iostream>
 #include <string>
 #include <memory>
 
-// ==========================================
+
 // 1. Interfaz Target (Objetivo)
-// ==========================================
+
 class ReproductorAudio {
 public:
     virtual ~ReproductorAudio() = default;
     virtual void reproducir(const std::string& tipoArchivo, const std::string& nombreArchivo) = 0;
 };
 
-// ==========================================
+
 // 2. Adaptee (Sistema de Audio Incompatible)
-// ==========================================
+
 class ReproductorAvanzado {
 public:
     void reproducirVlc(const std::string& nombreArchivo) {
@@ -79,9 +78,9 @@ public:
     }
 };
 
-// ==========================================
+
 // 3. Adapter (Adaptador de Interfaces)
-// ==========================================
+
 class AdaptadorAudio : public ReproductorAudio {
 private:
     // Encapsulamiento del componente adaptado mediante un puntero inteligente
@@ -102,9 +101,9 @@ public:
     }
 };
 
-// ==========================================
+
 // 4. Cliente / Sistema Principal
-// ==========================================
+
 class ReproductorMusica : public ReproductorAudio {
 private:
     std::unique_ptr<AdaptadorAudio> adaptador;
@@ -125,9 +124,9 @@ public:
     }
 };
 
-// ==========================================
+
 // Punto de Entrada Principal (Main)
-// ==========================================
+
 int main() {
     std::cout << "==================================================" << std::endl;
     std::cout << "     SISTEMA DE AUDIO INTEGRADO - GRUPO 4         " << std::endl;
@@ -166,7 +165,7 @@ Sigue estos comandos paso a paso para compilar y ejecutar la aplicación:
 sudo apt update && sudo apt install -y build-essential
 
 # 2. Crear el archivo fuente de C++
-nano audio_adapter_system.cpp
+nvim audio_adapter_system.cpp
 
 # 3. Compilar el programa usando el estándar C++14 o superior
 g++ -std=c++14 audio_adapter_system.cpp -o AudioAdapterApp
@@ -179,18 +178,6 @@ g++ -std=c++14 audio_adapter_system.cpp -o AudioAdapterApp
 
 ## 🖥️ Salida Esperada en Consola
 
-```text
-==================================================
-     SISTEMA DE AUDIO INTEGRADO - GRUPO 4         
-==================================================
-
-[Nativo MP3] Reproduciendo archivo: cancion_favorita.mp3
-[MP4 Player] Decodificando y reproduciendo: concierto_en_vivo.mp4
-[VLC Player] Procesando y reproduciendo: podcast_tecnico.vlc
-[Sistema Error] Formato no soportado: efecto_sonido.wav
-
-==================================================
-```
 ![alt text](image.png)
 ---
 
